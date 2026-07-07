@@ -44,7 +44,6 @@ function createAndAppendSearchResult(result) {
 
 function displayResults(searchResults) {
     spinnerEl.classList.add("d-none");
-    searchResultsEl.textContent = "";
 
     for (let result of searchResults) {
         createAndAppendSearchResult(result);
@@ -53,22 +52,25 @@ function displayResults(searchResults) {
 
 function searchWikipedia(event) {
     if (event.key === "Enter") {
+
         spinnerEl.classList.remove("d-none");
+        searchResultsEl.textContent = "";
 
         let searchInput = searchInputEl.value;
-        let url = "https://apis.ccbp.in/wiki-search?search=" + encodeURIComponent(searchInput);
+        let url = "https://apis.ccbp.in/wiki-search?search=" + searchInput;
+        let options = {
+            method: "GET"
+        };
 
-        fetch(url, { method: "GET" })
-            .then(function (response) {
+        fetch(url, options)
+            .then(function(response) {
                 return response.json();
             })
-            .then(function (jsonData) {
-                let { search_results } = jsonData;
+            .then(function(jsonData) {
+                let {
+                    search_results
+                } = jsonData;
                 displayResults(search_results);
-            })
-            .catch(function () {
-                spinnerEl.classList.add("d-none");
-                searchResultsEl.textContent = "Something went wrong. Please try again.";
             });
     }
 }
